@@ -1,28 +1,28 @@
-# 定义Python保留字列表（包含常用关键字）
-RESERVED_WORDS = {
-    'False', 'None', 'True', 'and', 'as', 'assert', 'async', 'await',
-    'break', 'class', 'continue', 'def', 'del', 'elif', 'else', 'except',
-    'finally', 'for', 'from', 'global', 'if', 'import', 'in', 'is',
-    'lambda', 'nonlocal', 'not', 'or', 'pass', 'raise', 'return',
-    'try', 'while', 'with', 'yield'
-}
+import keyword
 
-# 读取原文件
-with open('random_int.py', 'r', encoding='utf-8') as f:
-    content = f.read()
-
-# 处理内容：拆分单词，保留字不变，其他小写转大写
-processed_lines = []
-for line in content.splitlines():
-    processed_words = []
-    for word in line.split():
-        if word in RESERVED_WORDS:
-            processed_words.append(word)
+def convert_source_file(input_path, output_path):
+    # 读取原文件内容
+    with open(input_path, 'r', encoding='utf-8') as f:
+        content = f.read()
+    
+    # 获取Python保留字集合
+    reserved_words = set(keyword.kwlist)
+    result = []
+    # 按单词拆分（简单处理，实际可优化分词逻辑）
+    words = content.split()
+    for word in words:
+        if word in reserved_words:
+            # 保留字不转换
+            result.append(word)
         else:
-            processed_words.append(word.upper())
-    processed_lines.append(' '.join(processed_words))
-processed_content = '\n'.join(processed_lines)
+            # 非保留字转为大写
+            result.append(word.upper())
+    # 拼接回字符串（保留空格分隔）
+    converted_content = ' '.join(result)
+    
+    # 写入新文件
+    with open(output_path, 'w', encoding='utf-8') as f:
+        f.write(converted_content)
 
-# 保存到新文件（例如random_int_upper.py）
-with open('random_int_upper.py', 'w', encoding='utf-8') as f:
-    f.write(processed_content)
+# 调用示例：处理random_int.py，输出到converted_random_int.py
+convert_source_file('random_int.py', 'converted_random_int.py')
